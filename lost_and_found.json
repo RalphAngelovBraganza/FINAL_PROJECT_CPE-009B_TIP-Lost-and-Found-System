@@ -1,0 +1,37 @@
+{
+    "items": [
+        {
+            "item_name": "gfsefsfsef",
+            "category": "Electronics",
+            "subcategory": "sefsefse",
+            "description": "sefesf",
+            "color": "fsefes",
+            "size": "fsefse",
+            "brand": "fesf",
+            "date_found": "2000-01-01",
+            "location_found": "esfse",
+            "finder_name": "fesfse",
+            "photo_path": "",
+            "item_id": 1,
+            "status": "Unclaimed"
+        },
+        {
+            "item_name": "awd",
+            "category": "Electronics",
+            "subcategory": "awd",
+            "description": "wad",
+            "color": "awd",
+            "size": "awd",
+            "brand": "wad",
+            "date_found": "2000-01-01",
+            "location_found": "awd",
+            "finder_name": "awd",
+            "photo_path": "",
+            "item_id": 2,
+            "status": "Unclaimed"
+        }
+    ],
+    "inquiries": [],
+    "claims": [],
+    "settings": {}
+}
