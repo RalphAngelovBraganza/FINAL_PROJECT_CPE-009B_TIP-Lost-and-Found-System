@@ -67,13 +67,14 @@ class BasePage(QWidget):
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         for icon_name, callback, tooltip in actions:
-            button = QPushButton()
-            button.setObjectName("itemActionButton")
-            button.setFixedSize(30, 30)
-            button.setIconSize(QSize(18, 18))
-            button.setIcon(QIcon(os.path.join(BASE_DIR, "images", "icons", icon_name)))
-            button.setToolTip(tooltip)
-            button.clicked.connect(lambda checked=False, current_row=row, method=callback: method(current_row))
-            layout.addWidget(button)
+            # This loop goes through each action we want to put in the table, like edit, delete, or view.
+            button = QPushButton()  # Creates an empty button.
+            button.setObjectName("itemActionButton")  # Gives the button a name so we can style it using our stylesheet.
+            button.setFixedSize(30, 30)  # Makes the button 30x30 so all action buttons have the same size.
+            button.setIconSize(QSize(18, 18))  # Sets the icon size inside the button.
+            button.setIcon(QIcon(os.path.join(BASE_DIR, "images", "icons", icon_name)))  # Loads the correct icon from our icons folder.
+            button.setToolTip(tooltip)  # Shows a small description when the mouse hovers over the button.
+            button.clicked.connect(lambda checked=False, current_row=row, method=callback: method(current_row))  # When clicked, it runs the assigned function for that specific row.
+            layout.addWidget(button)  # Adds the button to the layout.
 
-        table.setCellWidget(row, table.columnCount() - 1, container)
+        table.setCellWidget(row, table.columnCount() - 1, container)  # Places the whole button container in the last column of the current row.
