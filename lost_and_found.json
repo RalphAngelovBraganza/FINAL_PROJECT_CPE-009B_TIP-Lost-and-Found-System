@@ -31,7 +31,25 @@
             "status": "Unclaimed"
         }
     ],
-    "inquiries": [],
+    "inquiries": [
+        {
+            "student_name": "awdawd",
+            "tip_email": "awdawdw",
+            "item_name": "awdawd",
+            "item_description": "awdawd",
+            "category": "Wallets and Cards",
+            "color": "awdaw",
+            "size": "daw",
+            "brand": "dwadawdwad",
+            "date_lost": "2026-10-30",
+            "location_last_seen": "",
+            "additional_details": "awdawdaw",
+            "photo_path": "images\\20261030_150123.jpg",
+            "inquiry_id": 1,
+            "date_reported": "2026-10-30",
+            "status": "Open"
+        }
+    ],
     "claims": [],
     "settings": {}
 }
