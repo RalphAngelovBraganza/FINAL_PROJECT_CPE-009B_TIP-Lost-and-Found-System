@@ -51,6 +51,7 @@ class InquiriesPage(BasePage):
         headers = ["ID", "Student Name", "T.I.P. Email", "Item Name", "Category",
                    "Date Lost", "Date Reported", "Status", "Actions"]  # The column titles.
         self.table = self.create_table(headers)  # Builds the table using the shared BasePage helper.
+        self.table.verticalHeader().setDefaultSectionSize(54)  # Matches the item table row height and centers inquiry actions.
         self.table.horizontalHeader().setStretchLastSection(False)  # The Actions column should keep its own small width.
         self.table.horizontalHeader().setSectionResizeMode(8, QHeaderView.ResizeMode.ResizeToContents)  # Fits the two icon buttons.
         self.main_layout.addWidget(self.table, 1)  # 1 = the table stretches to fill the page.

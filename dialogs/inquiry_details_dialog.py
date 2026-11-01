@@ -1,123 +1,116 @@
-import os
+import os  # Resolves relative photo paths against the project folder.
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import (QDialog, QDialogButtonBox, QFormLayout, QFrame, QHBoxLayout,
-                             QLabel, QLineEdit, QPlainTextEdit, QScrollArea, QVBoxLayout,
-                             QWidget)
+from PyQt6.QtGui import QFont, QPixmap
+from PyQt6.QtWidgets import (QDialog, QDialogButtonBox, QFrame, QHBoxLayout,
+                             QLabel, QScrollArea, QSizePolicy, QTextEdit, QVBoxLayout, QWidget, QLineEdit)
 
 from data.store import BASE_DIR, format_record_id
 
 
-class InquiryDetailsDialog(QDialog):
-    # A read-only window that shows one lost-item inquiry in full: the student's photo on the left
-    # and every saved detail on the right. Status changes and edits are done on the inquiries page.
+class InquiryDetailsDialog(QDialog):  # A read-only window that shows one inquiry in full: the photo on the left and every saved field on the right.
     def __init__(self, inquiry, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Inquiry Details")
-        self.setMinimumSize(900, 620)
+        self.setMinimumSize(1100, 700)
+        self.resize(1200, 800)
 
-        content = QHBoxLayout()
+        content = QHBoxLayout()  # Photo on one side, the scrollable details on the other.
         content.setContentsMargins(16, 16, 16, 12)
-        content.setSpacing(24)
-
-        # The photo area keeps a fixed size so the window does not jump around when there is no photo.
-        self.photo_label = QLabel()
-        self.photo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.photo_label.setFixedSize(320, 400)
-        self.photo_label.setStyleSheet("background-color: white; border: 1px solid #dddddd;")
-        self.show_photo(inquiry.get("photo_path", ""))
-
-        photo_box = QVBoxLayout()
-        photo_box.setContentsMargins(0, 0, 0, 0)
+        content.setSpacing(48)
+        photo_box = QVBoxLayout()  # The photo column is centred vertically.
+        photo = QLabel()
+        photo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        photo.setFixedSize(420, 520)  # The photo area keeps a fixed size so the window does not jump around when an inquiry has no photo.
+        photo.setStyleSheet("background-color: white; color: #222222; border: 1px solid #dddddd; border-radius: 4px;")
+        photo_path = inquiry.get("photo_path", "")
+        if photo_path:
+            full_path = photo_path if os.path.isabs(photo_path) else os.path.join(BASE_DIR, photo_path)  # Records store paths relative to the project folder.
+            pixmap = QPixmap(full_path)
+            if not pixmap.isNull():
+                photo.setPixmap(pixmap.scaled(404, 504, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))  # Fit inside the fixed photo box.
+            else:
+                photo.setText("Photo file not found")
+        else:
+            photo.setText("No photo available")
         photo_box.addStretch()
-        photo_box.addWidget(self.photo_label, 0, Qt.AlignmentFlag.AlignCenter)
+        photo_box.addWidget(photo, 0, Qt.AlignmentFlag.AlignCenter)
         photo_box.addStretch()
         content.addLayout(photo_box)
 
-        # Every row is a label plus a read-only box, so the values look like a form the user can read but not type in.
-        form = QFormLayout()
-        form.setSpacing(10)
+        # (Label, record key) pairs, in the order they show on the right; the two
+        # long texts get tall text boxes, everything else a one-line box.
         fields = [
-            ("Inquiry ID", format_record_id("INQ", inquiry.get("date_reported"), inquiry.get("inquiry_id"))),
-            ("Student Name", inquiry.get("student_name", "")),
-            ("T.I.P. Email", inquiry.get("tip_email", "")),
-            ("Item Name", inquiry.get("item_name", "")),
-            ("Category", inquiry.get("category", "")),
-            ("Color", inquiry.get("color", "")),
-            ("Size", inquiry.get("size", "")),
-            ("Brand", inquiry.get("brand", "")),
-            ("Date Lost", inquiry.get("date_lost", "")),
-            ("Last Seen Location", inquiry.get("location_last_seen", "")),
-            ("Date Reported", inquiry.get("date_reported", "")),
-            ("Status", inquiry.get("status", "")),
+            ("Inquiry ID", "inquiry_id"), ("Student Name", "student_name"),
+            ("T.I.P. Email", "tip_email"), ("Item Name", "item_name"),
+            ("Item Description", "item_description"),
+            ("Category", "category"), ("Color", "color"), ("Size", "size"),
+            ("Brand", "brand"), ("Date Lost", "date_lost"),
+            ("Last Seen Location", "location_last_seen"), ("Additional Details", "additional_details"),
+            ("Date Reported", "date_reported"), ("Status", "status")
         ]
-
-        for label_text, value_text in fields:
-            value = QLineEdit()  # Read-only textbox for a single line of detail.
-            value.setReadOnly(True)
-            value.setText(str(value_text or ""))
-            value.setFixedHeight(32)
-            form.addRow(QLabel(label_text + ":"), value)
-
-        # The two long text fields get taller boxes because they can hold whole paragraphs.
-        self.description_input = QPlainTextEdit()
-        self.description_input.setReadOnly(True)
-        self.description_input.setPlainText(inquiry.get("item_description", ""))
-        self.description_input.setFixedHeight(90)
-        form.addRow(QLabel("Item Description:"), self.description_input)
-
-        self.details_input = QPlainTextEdit()
-        self.details_input.setReadOnly(True)
-        self.details_input.setPlainText(inquiry.get("additional_details", ""))
-        self.details_input.setFixedHeight(90)
-        form.addRow(QLabel("Additional Details:"), self.details_input)
-
-        details = QVBoxLayout()
-        details.setContentsMargins(0, 0, 0, 0)
-        details.setSpacing(14)
+        details = QVBoxLayout()  # The right column: heading first, then one row per field.
+        details.setContentsMargins(8, 0, 8, 0)
+        details.setSpacing(22)
         heading = QLabel("Inquiry Details")
-        heading.setObjectName("pageTitle")
+        heading.setObjectName("pageTitle")  # Styled by pages.qss.
         details.addWidget(heading)
+        form = QVBoxLayout()
+        form.setContentsMargins(0, 0, 0, 0)
+        form.setSpacing(22)
+        for label_text, key in fields:
+            label = QLabel(label_text + ":")
+            label.setFont(QFont(label.font().family(), label.font().pointSize(), QFont.Weight.Bold))  # Bold labels make the rows scannable.
+            label.setStyleSheet("background-color: #f5f5f5; color: #222222; padding: 4px; border: none;")
+            box = QFrame()  # Each value sits in a named frame so dialogs.qss can style it.
+            box.setObjectName("itemDetailValueBox")
+            box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+            box_layout = QVBoxLayout(box)
+            box_layout.setContentsMargins(0, 0, 0, 0)
+            value_text = (format_record_id("INQ", inquiry.get("date_reported"), inquiry.get("inquiry_id")) if key == "inquiry_id" else str(inquiry.get(key) or ""))  # IDs show as e.g. INQ-2610-001.
+            if key not in ("item_description", "additional_details"):  # Short fields get a one-line read-only box.
+                value = QLineEdit()
+                value.setReadOnly(True)
+                value.setText(value_text)
+                value.setFixedHeight(34)
+                value.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+                if key == "status":
+                    value.setFont(QFont(value.font().family(), value.font().pointSize(), QFont.Weight.Bold))
+            else:  # The long texts get taller scrolling text boxes.
+                value = QTextEdit()
+                value.setReadOnly(True)
+                value.setPlainText(value_text)
+                value.setFixedHeight(100)
+                value.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+                value.setLineWrapMode(QTextEdit.LineWrapMode.WidgetWidth)
+                value.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+                value.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            value.setStyleSheet("background-color: white; color: #222222; border: 1px solid #d5d5d5; border-radius: 4px; padding: 6px;")
+            box_layout.addWidget(value)
+            field_row = QHBoxLayout()  # One row: label on the left, value frame stretching on the right.
+            field_row.setContentsMargins(0, 0, 0, 0)
+            field_row.setSpacing(12)
+            label.setFixedWidth(145)  # All labels share a width so the value boxes line up.
+            label.setAlignment(Qt.AlignmentFlag.AlignLeft | (Qt.AlignmentFlag.AlignTop if key in ("item_description", "additional_details") else Qt.AlignmentFlag.AlignVCenter))
+            field_row.addWidget(label, 0, Qt.AlignmentFlag.AlignLeft | (Qt.AlignmentFlag.AlignTop if key in ("item_description", "additional_details") else Qt.AlignmentFlag.AlignVCenter))
+            field_row.addWidget(box, 1)  # 1 = the value frame takes all leftover width.
+            form.addLayout(field_row)
         details.addLayout(form)
-        details.addStretch()
-
-        # The details column is placed inside a scroll area so a small window can still show every field.
-        details_widget = QWidget()
+        details_widget = QWidget()  # Everything above goes into a widget so the scroll area can move it.
+        details_widget.setMinimumWidth(500)
+        details_widget.setStyleSheet("background-color: #f5f5f5; color: #222222;")
         details_widget.setLayout(details)
-        scroll = QScrollArea()
+        scroll = QScrollArea()  # Long windows scroll instead of growing past the screen.
         scroll.setWidgetResizable(True)
+        scroll.setMinimumWidth(500)
         scroll.setFrameShape(QFrame.Shape.NoFrame)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         scroll.setWidget(details_widget)
         content.addWidget(scroll, 1)
 
-        # Only a Close button is needed because this window never saves anything.
-        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)  # Details are read-only, so the only button is Close.
         buttons.rejected.connect(self.reject)
-
-        layout = QVBoxLayout(self)
+        layout = QVBoxLayout(self)  # The dialog's outer layout.
         layout.setContentsMargins(12, 12, 12, 12)
         layout.addLayout(content, 1)
         layout.addWidget(buttons, 0, Qt.AlignmentFlag.AlignRight)
-
-    # Loads the saved photo into the photo area, or shows a plain message when there is none.
-    def show_photo(self, photo_path):
-        if not photo_path:
-            self.photo_label.setText("No photo available")
-            return
-
-        # Saved photos are relative to the project folder (images/...), so the full path is built here.
-        full_path = photo_path if os.path.isabs(photo_path) else os.path.join(BASE_DIR, photo_path)
-        pixmap = QPixmap(full_path)
-        if pixmap.isNull():
-            self.photo_label.setText("Photo file not found")
-            return
-
-        # Keeps the photo's proportions and shrinks it to fit inside the label.
-        self.photo_label.setPixmap(pixmap.scaled(
-            self.photo_label.width() - 8,
-            self.photo_label.height() - 8,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation,
-        ))

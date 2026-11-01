@@ -9,8 +9,8 @@ from pages.base_page import BasePage
 
 
 class ItemsPage(BasePage):
-    def __init__(self):
-        super().__init__("Found Items")
+    def __init__(self, show_title=True):
+        super().__init__("Found Items", show_title)  # show_title=False is used when the page is embedded in the home page.
 
         self.items = []  # All items that match the current search and category filter.
         self.current_items = []  # Only the items shown on the table rows right now.
@@ -40,6 +40,7 @@ class ItemsPage(BasePage):
         # The Actions column is added last because the view and edit buttons sit there, one set per row.
         headers = ["ID", "Item Name", "Category", "Date Found", "Location", "Finder", "Status", "Actions"]  # The column titles
         self.table = self.create_table(headers)  # Builds the table using the shared BasePage helper.
+        self.table.verticalHeader().setDefaultSectionSize(54)  # Keeps row actions centered in the same height as the reference table.
         self.table.horizontalHeader().setStretchLastSection(False)  # The Actions column should keep its own small width.
         self.table.horizontalHeader().setSectionResizeMode(7, QHeaderView.ResizeMode.ResizeToContents)  # Fits the two icon buttons.
         self.main_layout.addWidget(self.table, 1)  # Adds the table, and 1 makes it stretch to fill the page.
