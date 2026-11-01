@@ -28,7 +28,7 @@
             "finder_name": "awd",
             "photo_path": "",
             "item_id": 2,
-            "status": "Unclaimed"
+            "status": "Claimed"
         },
         {
             "item_name": "SF",
@@ -82,6 +82,17 @@
             "status": "Open"
         }
     ],
-    "claims": [],
+    "claims": [
+        {
+            "claim_id": 1,
+            "item_id": 2,
+            "claimant_name": "jp",
+            "contact_info": "3123231",
+            "date_claimed": "2026-11-01",
+            "verification_notes": "hi",
+            "release_date": "",
+            "released_by": ""
+        }
+    ],
     "settings": {}
 }
