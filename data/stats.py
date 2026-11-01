@@ -1,6 +1,7 @@
 from data.store import load_data
 
 
+# Counts items and inquiries for the overview.
 def _dashboard_counts(records):
     items, inquiries = records["items"], records["inquiries"]
     return {
@@ -11,6 +12,7 @@ def _dashboard_counts(records):
     }
 
 
+# Counts claims, releases, and inquiry statuses.
 def _report_counts(records):
     counts = _dashboard_counts(records)
     inquiries, claims = records["inquiries"], records["claims"]
@@ -24,6 +26,7 @@ def _report_counts(records):
     return counts
 
 
+# Counts items by category and status.
 def _category_summary(items):
     summary = {}
     for item in items:
@@ -37,10 +40,12 @@ def _category_summary(items):
     return [summary[key] for key in sorted(summary)]
 
 
+# Returns the totals shown on the dashboard.
 def get_dashboard_counts():
     return _dashboard_counts(load_data())
 
 
+# Returns report totals and category counts.
 def get_report_summary():
     records = load_data()
     return _report_counts(records), _category_summary(records["items"])

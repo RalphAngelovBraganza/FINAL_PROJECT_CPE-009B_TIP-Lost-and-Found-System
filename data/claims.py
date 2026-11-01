@@ -1,6 +1,7 @@
 from data.store import load_data, save_data, next_id, find_record, format_record_id
 
 
+# Records a claim for an item.
 def add_claim(item_id, claimant_name, contact_info, date_claimed, verification_notes):
     records = load_data()
     item = find_record(records["items"], "item_id", item_id)
@@ -17,6 +18,7 @@ def add_claim(item_id, claimant_name, contact_info, date_claimed, verification_n
     save_data(records)
 
 
+# Handles filter claims.
 def _filter_claims(claims, search):
     if not search:
         return claims
@@ -25,6 +27,7 @@ def _filter_claims(claims, search):
     return [claim for claim in claims if term in format_record_id("CLM", claim.get("date_claimed"), claim["claim_id"]).casefold() or any(term in str(claim.get(field, "")).casefold() for field in fields)]
 
 
+# Returns claims matching the search text.
 def get_claims(search=""):
     records = load_data()
     items = {item["item_id"]: item for item in records["items"]}
@@ -43,6 +46,7 @@ def get_claims(search=""):
     return sorted(claims, key=lambda claim: claim["claim_id"], reverse=True)
 
 
+# Records the release of a claimed item.
 def release_claim(claim_id, release_date, released_by):
     records = load_data()
     claim = find_record(records["claims"], "claim_id", claim_id)
@@ -53,6 +57,7 @@ def release_claim(claim_id, release_date, released_by):
     return 1
 
 
+# Cancels a claim and reopens the item.
 def cancel_claim(claim_id):
     records = load_data()
     claim = find_record(records["claims"], "claim_id", claim_id)

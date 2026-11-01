@@ -1,6 +1,7 @@
 from .store import load_data, save_data, next_id, find_record, format_record_id
 
 
+# Saves a new found item.
 def add_item(data):
     records = load_data()
     item = dict(data)
@@ -9,6 +10,7 @@ def add_item(data):
     save_data(records)
 
 
+# Saves changes to an item.
 def update_item(item_id, data):
     records = load_data()
     item = find_record(records["items"], "item_id", item_id)
@@ -20,6 +22,7 @@ def update_item(item_id, data):
     save_data(records)
 
 
+# Handles filter items.
 def _filter_items(items, search, category="All"):
     if category != "All":
         items = [item for item in items if item.get("category") == category]
@@ -30,16 +33,19 @@ def _filter_items(items, search, category="All"):
     return items
 
 
+# Returns items matching the selected filters.
 def get_items(search="", category="All"):
     records = load_data()["items"]
     records = _filter_items(records, search, category)
     return sorted(records, key=lambda item: item["item_id"], reverse=True)
 
 
+# Finds an item by its ID.
 def get_item_by_id(item_id):
     return find_record(load_data()["items"], "item_id", item_id)
 
 
+# Returns unclaimed items sorted by name.
 def get_unclaimed_items():
     items = [item for item in load_data()["items"] if item.get("status") == "Unclaimed"]
     return sorted(({key: item.get(key, "") for key in ("item_id", "item_name", "category", "date_found")} for item in items),

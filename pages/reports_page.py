@@ -1,10 +1,10 @@
-from PyQt6.QtWidgets import QFormLayout, QGroupBox, QHBoxLayout, QLabel  # Widgets for the three summary boxes.
+from PyQt6.QtWidgets import QFormLayout, QGroupBox, QHBoxLayout, QLabel
 
-from data.stats import get_report_summary  # Counts everything and builds the by-category table in one pass.
-from pages.base_page import BasePage, guarded  # The shared page base and the error-catching decorator.
+from data.stats import get_report_summary
+from pages.base_page import BasePage, guarded
 
-# SUMMARY_GROUPS drives the summary boxes: every entry becomes one "Label: value"
-# row, and the string keys match the dictionary get_report_summary() returns.
+
+# Groups report metrics under their card headings.
 SUMMARY_GROUPS = {
     "Found Items": [
         ("Total items", "total_items"),
@@ -24,32 +24,37 @@ SUMMARY_GROUPS = {
 }
 
 
-class ReportsPage(BasePage):  # The reports screen: nine totals plus one table per category.
-    def __init__(self):  # Builds the three boxes and the category table once.
-        super().__init__("Reports")  # BasePage sets up the main layout and the page title.
+# Summarizes records and item categories.
+class ReportsPage(BasePage):
 
-        self.value_labels = {}  # Remember which QLabel belongs to which metric key so refresh() can update it.
+    # Builds the page controls and connects their signals.
+    def __init__(self):
+        super().__init__("Reports")
 
-        summary_row = QHBoxLayout()  # The three boxes sit side by side in one row.
-        for group_title, rows in SUMMARY_GROUPS.items():  # One QGroupBox per dictionary entry.
-            group_box = QGroupBox()  # The white card; its heading is added inside.
-            form = QFormLayout(group_box)  # Form layout puts each "Label: value" on its own row.
-            form.addRow(QLabel(group_title))  # Keeps the title fully inside the card.
+        self.value_labels = {}
+
+        summary_row = QHBoxLayout()
+        for group_title, rows in SUMMARY_GROUPS.items():
+            group_box = QGroupBox()
+            form = QFormLayout(group_box)
+            form.addRow(QLabel(group_title))
             for label_text, key in rows:
-                value_label = QLabel("0")  # Starts at 0; refresh() fills in the real number.
-                self.value_labels[key] = value_label  # Keep it reachable by its metric key.
-                form.addRow(label_text + ":", value_label)  # One line of the summary.
-            summary_row.addWidget(group_box)  # Add the finished box to the row.
-        self.main_layout.addLayout(summary_row)  # The row sits under the page title.
+                value_label = QLabel("0")
+                self.value_labels[key] = value_label
+                form.addRow(label_text + ":", value_label)
+            summary_row.addWidget(group_box)
+        self.main_layout.addLayout(summary_row)
 
-        self.main_layout.addWidget(QLabel("Found Items by Category"))  # Heading above the breaks-down table.
-        self.category_table = self.create_table(["Category", "Total", "Unclaimed", "Claimed"])  # One row per category with its counts.
-        self.main_layout.addWidget(self.category_table)  # The table fills the rest of the page.
+        self.main_layout.addWidget(QLabel("Found Items by Category"))
+        self.category_table = self.create_table(["Category", "Total", "Unclaimed", "Claimed"])
+        self.main_layout.addWidget(self.category_table)
 
-    @guarded()  # A corrupt or locked JSON file shows an error box instead of crashing.
-    def refresh(self):  # Runs every time the page is opened, so the numbers are never stale.
-        counts, categories = get_report_summary()  # The counts for the boxes and the rows for the table, from one read of the file.
-        for key, label in self.value_labels.items():  # Copy each count into its QLabel.
-            label.setText(str(counts[key]))  # setText needs a string, so the number is converted.
-        rows = [[row["category"], row["total"], row["unclaimed"], row["claimed"]] for row in categories]  # Turn each category dictionary into a table row.
-        self.fill_table(self.category_table, rows)  # BasePage helper that writes the rows into the table.
+
+    # Reloads the displayed data.
+    @guarded()
+    def refresh(self):
+        counts, categories = get_report_summary()
+        for key, label in self.value_labels.items():
+            label.setText(str(counts[key]))
+        rows = [[row["category"], row["total"], row["unclaimed"], row["claimed"]] for row in categories]
+        self.fill_table(self.category_table, rows)

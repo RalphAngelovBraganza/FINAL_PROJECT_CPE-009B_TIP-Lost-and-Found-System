@@ -11,12 +11,15 @@ from pages.claims_page import ClaimsPage
 from pages.reports_page import ReportsPage
 from pages.settings_page import SettingsPage
 
-#THE BASIC STRUCTURE OF THE MAIN WINDOW IS DONE, WE HAVE TO LOCK IN BUT WE HAVE A GOOD STARTING POINT
+
+# Builds the main window and page navigation.
 class MainWindow(QMainWindow):
+
+    # Builds the window and connects page navigation.
     def __init__(self):
         super().__init__()
         self.setWindowTitle("T.I.P. Lost and Found Office Management and Tracking System")
-        self.resize(1150, 700) #Random size I just put here 
+        self.resize(1150, 700)
 
         central = QWidget()
         self.setCentralWidget(central)
@@ -39,7 +42,7 @@ class MainWindow(QMainWindow):
 
         self.pages = QStackedWidget()
 
-        #THESE ARE ALL THE PAGES THAT WILL BE ADDED TO THE MAIN WINDOW, WE WILL ADD MORE LATER
+
         page_list = [
             ("Dashboard", DashboardPage()),
             ("Items", ItemsPage()),
@@ -70,6 +73,8 @@ class MainWindow(QMainWindow):
         self.button_group.button(0).setChecked(True)
         self.switch_page(0)
 
+
+    # Displays the selected page and refreshes it.
     def switch_page(self, index):
         self.pages.setCurrentIndex(index)
         self.pages.currentWidget().refresh()

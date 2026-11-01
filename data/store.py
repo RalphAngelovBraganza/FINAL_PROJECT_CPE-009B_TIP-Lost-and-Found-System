@@ -3,24 +3,38 @@ import os
 import shutil
 from datetime import date, datetime
 
+
+# Stores the application folder path.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Stores the database file path.
 DATA_PATH = os.path.join(BASE_DIR, "lost_and_found.json")
+
+# Stores the image folder path.
 IMAGES_DIR = os.path.join(BASE_DIR, "images")
 
+
+# Lists the available record categories.
 CATEGORIES = [
     "Electronics", "Bags", "Clothing", "Accessories", "Wallets and Cards",
     "IDs", "Study Materials", "Tumblers/Containers", "Keys", "Others",
 ]
+
+# Lists the possible item statuses.
 ITEM_STATUSES = ["Unclaimed", "Claimed"]
+
+# Lists the possible inquiry statuses.
 INQUIRY_STATUSES = ["Open", "Resolved"]
 
 
+# Creates the database and required folders.
 def create_database():
     os.makedirs(IMAGES_DIR, exist_ok=True)
     if not os.path.exists(DATA_PATH):
         save_data({"items": [], "inquiries": [], "claims": [], "settings": {}})
 
 
+# Loads saved records from the database.
 def load_data():
     create_database()
     with open(DATA_PATH, "r", encoding="utf-8") as file:
@@ -30,24 +44,29 @@ def load_data():
     return data
 
 
+# Writes records to the database.
 def save_data(data):
     with open(DATA_PATH, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
 
+# Returns the next record ID.
 def next_id(records, id_key):
     return max((record[id_key] for record in records), default=0) + 1
 
 
+# Formats a record ID for display.
 def format_record_id(prefix, record_date, record_id):
     month = str(record_date or date.today().isoformat())[:7].replace("-", "")[2:]
     return f"{prefix}-{month}-{int(record_id):03d}"
 
 
+# Finds a record by its field value.
 def find_record(records, key, value):
     return next((record for record in records if record.get(key) == value), None)
 
 
+# Copies the selected photo into the app images folder.
 def copy_image_to_images(source_path):
     os.makedirs(IMAGES_DIR, exist_ok=True)
     if not source_path:
@@ -68,5 +87,6 @@ def copy_image_to_images(source_path):
     return os.path.join("images", filename)
 
 
+# Copies the database to the selected location.
 def backup_database(destination):
     shutil.copy2(DATA_PATH, destination)
