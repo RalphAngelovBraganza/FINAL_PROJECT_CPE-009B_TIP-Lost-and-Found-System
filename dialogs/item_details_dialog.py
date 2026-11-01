@@ -1,5 +1,4 @@
-import os  # Resolves relative photo paths against the project folder.
-
+import os  
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QPixmap
 from PyQt6.QtWidgets import (QDialog, QDialogButtonBox, QFrame,
