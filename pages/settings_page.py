@@ -15,9 +15,8 @@ class SettingsPage(BasePage):
     def __init__(self):
         super().__init__("Settings")
 
-        database_box = QGroupBox()
+        database_box = QGroupBox("Database")
         database_layout = QVBoxLayout(database_box)
-        database_layout.addWidget(QLabel("Database"))
 
         location_label = QLabel(f"Data file: {DATA_PATH}")
         location_label.setWordWrap(True)
@@ -51,3 +50,4 @@ class SettingsPage(BasePage):
         if not file_path:
             return
         backup_database(file_path)
+        self.show_info("The data was backed up successfully.")

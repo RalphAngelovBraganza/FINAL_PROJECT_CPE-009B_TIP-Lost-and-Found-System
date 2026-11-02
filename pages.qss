@@ -1,0 +1,87 @@
+/* pages.qss - sidebar, page titles, tables, and dashboard components */
+#sidebar {
+    background-color: #1e1e1e;
+}
+
+#logoLabel {
+    color: #f2c200;
+    font-size: 16pt;
+    font-weight: bold;
+    padding: 24px 16px;
+}
+
+#navButton {
+    background-color: transparent;
+    color: #dddddd;
+    text-align: left;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 0px;
+    font-size: 11pt;
+    font-weight: normal;
+}
+
+#navButton:hover {
+    background-color: #333333;
+}
+
+#navButton:checked {
+    background-color: #f2c200;
+    color: #1e1e1e;
+    font-weight: bold;
+}
+
+#pageTitle {
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+QTableWidget {
+    background-color: white;
+    alternate-background-color: #fafafa;
+    gridline-color: #e0e0e0;
+    selection-background-color: #f7e7a0;
+    selection-color: #1e1e1e;
+}
+
+QTableWidget:focus {
+    border: 2px solid #8a6d00;
+}
+
+QHeaderView::section {
+    background-color: #1e1e1e;
+    color: white;
+    padding: 6px;
+    border: none;
+}
+
+#statCard {
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+}
+
+#statValue {
+    font-size: 30pt;
+    font-weight: bold;
+}
+
+#statTitle {
+    color: #666666;
+    font-size: 11pt;
+}
+
+QGroupBox {
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    margin-top: 12px;
+    padding: 12px;
+    font-weight: bold;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 12px;
+    padding: 0 4px;
+}

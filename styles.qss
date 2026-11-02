@@ -22,11 +22,6 @@ QPushButton:hover {
     background-color: #ffd633;
 }
 
-QPushButton:focus {
-    border: 2px solid #8a6d00;
-    padding: 5px 14px;
-}
-
 QPushButton:pressed {
     background-color: #d9ad00;
 }
@@ -64,4 +59,37 @@ QLineEdit:disabled, QTextEdit:disabled, QComboBox:disabled, QDateEdit:disabled {
     background-color: #eeeeee;
     color: #777777;
     border-color: #d5d5d5;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #ffffff;
+    color: #222222;
+    selection-background-color: #f7e7a0;
+    selection-color: #1e1e1e;
+    border: 1px solid #bbbbbb;
+    outline: 0;
+}
+
+QComboBox QAbstractItemView::item {
+    background-color: #ffffff;
+    color: #222222;
+    padding: 5px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background-color: #f7e7a0;
+    color: #1e1e1e;
+}
+
+QListView#completerPopup {
+    background-color: #ffffff;
+    color: #222222;
+    selection-background-color: #f7e7a0;
+    selection-color: #1e1e1e;
+    border: 1px solid #bbbbbb;
+    outline: 0;
+}
+
+QListView#completerPopup::item {
+    padding: 5px;
 }

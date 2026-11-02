@@ -32,11 +32,6 @@ QDialog QDialogButtonBox QPushButton {
     padding: 8px 18px;
 }
 
-QDialog QDialogButtonBox QPushButton:focus {
-    border: 2px solid #8a6d00;
-    padding: 6px 16px;
-}
-
 QDialog QPushButton:disabled {
     background-color: #e5e5e5;
     color: #777777;
