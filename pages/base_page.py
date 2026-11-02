@@ -53,7 +53,7 @@ class BasePage(QWidget):
 
     # Reloads the displayed data.
     def refresh(self):
-        pass
+        raise NotImplementedError("This page must define its own refresh() method.")
 
 
     # Builds a read-only table with the given columns.

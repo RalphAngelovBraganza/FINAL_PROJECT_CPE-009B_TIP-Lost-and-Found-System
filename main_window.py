@@ -1,13 +1,10 @@
-import os
-
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (QButtonGroup, QFrame, QHBoxLayout, QLabel, QMainWindow,
                              QPushButton, QStackedWidget, QVBoxLayout, QWidget)
 
-from pages.dashboard_page import DashboardPage
-from pages.items_page import ItemsPage
-from pages.inquiries_page import InquiriesPage
 from pages.claims_page import ClaimsPage
+from pages.inquiries_page import InquiriesPage
+from pages.home_page import HomePage
 from pages.reports_page import ReportsPage
 from pages.settings_page import SettingsPage
 
@@ -35,18 +32,16 @@ class MainWindow(QMainWindow):
         sidebar_layout.setSpacing(2)
 
         title = QLabel("T.I.P. Lost & Found")
-        title.setObjectName("SIDEBAR TITLE")
+        title.setObjectName("logoLabel")
         title.setFixedHeight(90)
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         sidebar_layout.addWidget(title)
 
         self.pages = QStackedWidget()
 
-
         page_list = [
-            ("Dashboard", DashboardPage()),
-            ("Items", ItemsPage()),
-            ("Inquiries", InquiriesPage()),
+            ("Dashboard and Items", HomePage()),
+            ("Lost-Item Inquiries", InquiriesPage()),
             ("Claims and Releases", ClaimsPage()),
             ("Reports", ReportsPage()),
             ("Settings", SettingsPage()),
