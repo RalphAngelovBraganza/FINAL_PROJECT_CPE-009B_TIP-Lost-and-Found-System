@@ -26,6 +26,8 @@ class InquiriesPage(BasePage):
         self.search_input.setPlaceholderText("Search")
         self.search_input.setFixedHeight(32)
 
+        date_filter_widget, self.date_filter, self.date_input = self.create_date_filter()
+
         self.status_filter = QComboBox()
         self.status_filter.setFixedHeight(32)
         self.status_filter.setMinimumWidth(180)
@@ -39,6 +41,7 @@ class InquiriesPage(BasePage):
         self.reopen_button = QPushButton("Reopen")
 
         controls.addWidget(self.search_input, 1)
+        controls.addWidget(date_filter_widget)
         controls.addWidget(QLabel("Status:"))
         controls.addWidget(self.status_filter)
         controls.addWidget(self.add_button)
@@ -77,6 +80,8 @@ class InquiriesPage(BasePage):
         self.resolve_button.clicked.connect(lambda: self.change_status("Resolved"))
         self.reopen_button.clicked.connect(lambda: self.change_status("Open"))
         self.search_input.textChanged.connect(self.start_search)
+        self.date_filter.toggled.connect(self.start_search)
+        self.date_input.dateChanged.connect(self.start_search)
         self.status_filter.currentIndexChanged.connect(self.start_search)
         self.previous_button.clicked.connect(self.previous_page)
         self.next_button.clicked.connect(self.next_page)
@@ -103,9 +108,10 @@ class InquiriesPage(BasePage):
     def refresh(self):
         search = self.search_input.text()
         status = self.status_filter.currentText()
+        date_filter = self.date_input.date().toString("yyyy-MM-dd") if self.date_filter.isChecked() else ""
 
         try:
-            self.inquiries = get_inquiries(search, status)
+            self.inquiries = get_inquiries(search, status, date_filter)
         except (OSError, ValueError, TypeError, KeyError):
             self.status_label.setText("Could not load inquiries.")
             return

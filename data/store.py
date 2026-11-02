@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import tempfile
 from datetime import date, datetime
 
 
@@ -90,3 +91,52 @@ def copy_image_to_images(source_path):
 # Copies the database to the selected location.
 def backup_database(destination):
     shutil.copy2(DATA_PATH, destination)
+
+
+# Loads and validates a JSON database before replacing the current data.
+def import_database(source_path):
+    try:
+        with open(source_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+    except json.JSONDecodeError as error:
+        raise ValueError("The selected file is not valid JSON.") from error
+
+    if not isinstance(data, dict):
+        raise ValueError("The selected file must contain a JSON object.")
+
+    id_keys = {"items": "item_id", "inquiries": "inquiry_id", "claims": "claim_id"}
+    for collection, id_key in id_keys.items():
+        records = data.get(collection)
+        if not isinstance(records, list):
+            raise ValueError(f"The JSON file must contain an '{collection}' list.")
+        for record in records:
+            if not isinstance(record, dict):
+                raise ValueError(f"Every entry in '{collection}' must be an object.")
+            if not isinstance(record.get(id_key), int) or isinstance(record.get(id_key), bool):
+                raise ValueError(f"Every entry in '{collection}' must have a numeric '{id_key}'.")
+
+    settings = data.get("settings", {})
+    if not isinstance(settings, dict):
+        raise ValueError("The 'settings' value must be an object.")
+
+    imported_data = {
+        "items": data["items"],
+        "inquiries": data["inquiries"],
+        "claims": data["claims"],
+        "settings": settings,
+    }
+
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w", encoding="utf-8", dir=os.path.dirname(DATA_PATH),
+            suffix=".json.tmp", delete=False
+        ) as file:
+            temp_path = file.name
+            json.dump(imported_data, file, indent=4, ensure_ascii=False)
+        os.replace(temp_path, DATA_PATH)
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.remove(temp_path)
+
+    return {collection: len(imported_data[collection]) for collection in id_keys}

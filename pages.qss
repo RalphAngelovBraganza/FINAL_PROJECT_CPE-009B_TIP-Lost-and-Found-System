@@ -36,6 +36,34 @@
     font-weight: bold;
 }
 
+QCheckBox#dateFilterCheckBox {
+    spacing: 8px;
+    color: #334155;
+    background-color: transparent;
+}
+
+QCheckBox#dateFilterCheckBox:hover {
+    color: #a16207;
+}
+
+QCheckBox#dateFilterCheckBox::indicator {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #94a3b8;
+    border-radius: 3px;
+    background-color: white;
+}
+
+QCheckBox#dateFilterCheckBox::indicator:checked {
+    background-color: #eab308;
+    border: 1px solid #eab308;
+    image: url(checkmark.png);
+}
+
+QCheckBox#dateFilterCheckBox:checked {
+    color: #18181b;
+}
+
 QTableWidget {
     background-color: white;
     alternate-background-color: #fafafa;

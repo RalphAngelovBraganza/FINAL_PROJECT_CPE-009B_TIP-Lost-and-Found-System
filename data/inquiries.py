@@ -13,9 +13,12 @@ def add_inquiry(data):
 
 
 # Handles filter inquiries.
-def _filter_inquiries(records, search, status="All"):
+def _filter_inquiries(records, search, status="All", date_filter=""):
     if status != "All":
         records = [item for item in records if item.get("status") == status]
+    if date_filter:
+        records = [item for item in records
+                   if date_filter in (item.get("date_lost", ""), item.get("date_reported", ""))]
     if search:
         term = search.casefold()
         fields = ("student_name", "tip_email", "item_name", "item_description", "category", "color", "brand",
@@ -25,9 +28,9 @@ def _filter_inquiries(records, search, status="All"):
 
 
 # Returns inquiries matching the selected filters.
-def get_inquiries(search="", status="All"):
+def get_inquiries(search="", status="All", date_filter=""):
     records = load_data()["inquiries"]
-    records = _filter_inquiries(records, search, status)
+    records = _filter_inquiries(records, search, status, date_filter)
     return sorted(records, key=lambda item: item["inquiry_id"], reverse=True)
 
 

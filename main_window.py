@@ -47,12 +47,15 @@ class MainWindow(QMainWindow):
 
         self.pages = QStackedWidget()
 
+        settings_page = SettingsPage()
+        settings_page.data_imported.connect(self.refresh_all_pages)
+
         page_list = [
             ("Dashboard and Items", HomePage()),
             ("Lost-Item Inquiries", InquiriesPage()),
             ("Claims and Releases", ClaimsPage()),
             ("Reports", ReportsPage()),
-            ("Settings", SettingsPage()),
+            ("Settings", settings_page),
         ]
 
         self.button_group = QButtonGroup(self)
@@ -81,3 +84,9 @@ class MainWindow(QMainWindow):
     def switch_page(self, index):
         self.pages.setCurrentIndex(index)
         self.pages.currentWidget().refresh()
+
+
+    # Refreshes every page after the database is imported.
+    def refresh_all_pages(self):
+        for index in range(self.pages.count()):
+            self.pages.widget(index).refresh()

@@ -15,7 +15,12 @@ def load_stylesheet(app):
         qss_path = os.path.join(BASE_DIR, name)
         if os.path.exists(qss_path):
             with open(qss_path, "r", encoding="utf-8") as file:
-                styles.append(file.read())
+                style_text = file.read()
+                checkmark_path = os.path.join(BASE_DIR, "checkmark.png").replace(os.sep, "/")
+                style_text = style_text.replace(
+                    "url(checkmark.png)", f'url("{checkmark_path}")'
+                )
+                styles.append(style_text)
     app.setStyleSheet("\n".join(styles))
 
 

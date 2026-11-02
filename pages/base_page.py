@@ -2,10 +2,11 @@ import inspect
 import os
 from functools import wraps
 
-from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtCore import QDate, QSize, Qt
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import (QAbstractItemView, QHBoxLayout, QHeaderView, QLabel, QMessageBox,
-                             QPushButton, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
+from PyQt6.QtWidgets import (QAbstractItemView, QCheckBox, QDateEdit, QHBoxLayout,
+                             QHeaderView, QLabel, QMessageBox, QPushButton,
+                             QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
 
 from data.store import BASE_DIR
 
@@ -68,6 +69,28 @@ class BasePage(QWidget):
         table.verticalHeader().setVisible(False)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         return table
+
+
+    # Builds a disabled-until-selected exact-date filter.
+    def create_date_filter(self):
+        container = QWidget()
+        layout = QHBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(6)
+
+        checkbox = QCheckBox("Filter by date")
+        checkbox.setObjectName("dateFilterCheckBox")
+        date_input = QDateEdit(QDate.currentDate())
+        date_input.setCalendarPopup(True)
+        date_input.setDisplayFormat("yyyy-MM-dd")
+        date_input.setFixedHeight(32)
+        date_input.setEnabled(False)
+        date_input.setToolTip("Choose a date to match the dates shown in this table.")
+        checkbox.toggled.connect(date_input.setEnabled)
+
+        layout.addWidget(checkbox)
+        layout.addWidget(date_input)
+        return container, checkbox, date_input
 
 
     # Fills a table with the supplied rows.

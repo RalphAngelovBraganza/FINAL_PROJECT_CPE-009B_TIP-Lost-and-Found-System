@@ -19,7 +19,13 @@ class ClaimsPage(BasePage):
 
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Search")
-        self.main_layout.addWidget(self.search_input)
+        self.search_input.setFixedHeight(32)
+        date_filter_widget, self.date_filter, self.date_input = self.create_date_filter()
+
+        search_row = QHBoxLayout()
+        search_row.addWidget(self.search_input, 1)
+        search_row.addWidget(date_filter_widget)
+        self.main_layout.addLayout(search_row)
 
         button_row = QHBoxLayout()
         self.claim_button = QPushButton("Record Claim")
@@ -41,6 +47,8 @@ class ClaimsPage(BasePage):
         self.main_layout.addWidget(self.count_label)
 
         self.search_input.textChanged.connect(self.load_claims)
+        self.date_filter.toggled.connect(self.load_claims)
+        self.date_input.dateChanged.connect(self.load_claims)
         self.claim_button.clicked.connect(self.record_claim)
         self.release_button.clicked.connect(self.mark_released)
         self.cancel_button.clicked.connect(self.cancel_selected_claim)
@@ -54,7 +62,8 @@ class ClaimsPage(BasePage):
     # Loads claims matching the current search.
     @guarded()
     def load_claims(self):
-        claims = get_claims(self.search_input.text().strip())
+        date_filter = self.date_input.date().toString("yyyy-MM-dd") if self.date_filter.isChecked() else ""
+        claims = get_claims(self.search_input.text().strip(), date_filter)
         rows = []
         for claim in claims:
             if claim["release_date"]:

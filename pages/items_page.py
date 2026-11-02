@@ -25,6 +25,8 @@ class ItemsPage(BasePage):
         self.search_input.setPlaceholderText("Search")
         self.search_input.setFixedHeight(32)
 
+        date_filter_widget, self.date_filter, self.date_input = self.create_date_filter()
+
         self.category_filter = QComboBox()
         self.category_filter.setFixedHeight(32)
         self.category_filter.setMinimumWidth(180)
@@ -35,6 +37,7 @@ class ItemsPage(BasePage):
         self.add_button.setFixedHeight(32)
 
         controls.addWidget(self.search_input, 1)
+        controls.addWidget(date_filter_widget)
         controls.addWidget(QLabel("Category:"))
         controls.addWidget(self.category_filter)
         controls.addWidget(self.add_button)
@@ -64,6 +67,8 @@ class ItemsPage(BasePage):
 
         self.add_button.clicked.connect(self.add_item)
         self.search_input.textChanged.connect(self.start_search)
+        self.date_filter.toggled.connect(self.start_search)
+        self.date_input.dateChanged.connect(self.start_search)
         self.category_filter.currentIndexChanged.connect(self.start_search)
         self.previous_button.clicked.connect(self.previous_page)
         self.next_button.clicked.connect(self.next_page)
@@ -90,9 +95,10 @@ class ItemsPage(BasePage):
     def refresh(self):
         search = self.search_input.text()
         category = self.category_filter.currentText()
+        date_filter = self.date_input.date().toString("yyyy-MM-dd") if self.date_filter.isChecked() else ""
 
         try:
-            self.items = get_items(search, category)
+            self.items = get_items(search, category, date_filter)
         except (OSError, ValueError, TypeError):
             self.status_label.setText("Could not load items.")
             return

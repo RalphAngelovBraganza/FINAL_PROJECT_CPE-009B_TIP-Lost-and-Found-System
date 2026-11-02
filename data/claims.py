@@ -19,7 +19,10 @@ def add_claim(item_id, claimant_name, contact_info, date_claimed, verification_n
 
 
 # Handles filter claims.
-def _filter_claims(claims, search):
+def _filter_claims(claims, search, date_filter=""):
+    if date_filter:
+        claims = [claim for claim in claims
+                  if date_filter in (claim.get("date_claimed", ""), claim.get("release_date", ""))]
     if not search:
         return claims
     term = search.casefold()
@@ -28,7 +31,7 @@ def _filter_claims(claims, search):
 
 
 # Returns claims matching the search text.
-def get_claims(search=""):
+def get_claims(search="", date_filter=""):
     records = load_data()
     items = {item["item_id"]: item for item in records["items"]}
     claims = []
@@ -42,7 +45,7 @@ def get_claims(search=""):
             item_date_found=item.get("date_found", ""),
         )
         claims.append(result)
-    claims = _filter_claims(claims, search)
+    claims = _filter_claims(claims, search, date_filter)
     return sorted(claims, key=lambda claim: claim["claim_id"], reverse=True)
 
 

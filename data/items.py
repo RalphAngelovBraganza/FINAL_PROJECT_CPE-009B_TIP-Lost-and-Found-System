@@ -23,9 +23,11 @@ def update_item(item_id, data):
 
 
 # Handles filter items.
-def _filter_items(items, search, category="All"):
+def _filter_items(items, search, category="All", date_filter=""):
     if category != "All":
         items = [item for item in items if item.get("category") == category]
+    if date_filter:
+        items = [item for item in items if item.get("date_found") == date_filter]
     if search:
         term = search.casefold()
         fields = ("item_name", "subcategory", "description", "color", "brand", "location_found", "finder_name")
@@ -34,9 +36,9 @@ def _filter_items(items, search, category="All"):
 
 
 # Returns items matching the selected filters.
-def get_items(search="", category="All"):
+def get_items(search="", category="All", date_filter=""):
     records = load_data()["items"]
-    records = _filter_items(records, search, category)
+    records = _filter_items(records, search, category, date_filter)
     return sorted(records, key=lambda item: item["item_id"], reverse=True)
 
 

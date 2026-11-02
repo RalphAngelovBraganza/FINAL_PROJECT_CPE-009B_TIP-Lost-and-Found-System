@@ -1,15 +1,17 @@
 from datetime import date
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (QFileDialog, QGroupBox, QHBoxLayout, QLabel,
-                             QPushButton, QVBoxLayout)
+                             QMessageBox, QPushButton, QVBoxLayout)
 
-from data.store import DATA_PATH, backup_database
+from data.store import DATA_PATH, backup_database, import_database
 from pages.base_page import BasePage, guarded
 
 
 # Provides database backup controls.
 class SettingsPage(BasePage):
+
+    data_imported = pyqtSignal()
 
     # Builds the page controls and connects their signals.
     def __init__(self):
@@ -28,7 +30,9 @@ class SettingsPage(BasePage):
 
         backup_row = QHBoxLayout()
         self.backup_button = QPushButton("Back Up Data")
+        self.import_button = QPushButton("Load JSON Data")
         backup_row.addWidget(self.backup_button)
+        backup_row.addWidget(self.import_button)
         backup_row.addStretch()
         database_layout.addLayout(backup_row)
 
@@ -36,6 +40,7 @@ class SettingsPage(BasePage):
         self.main_layout.addStretch()
 
         self.backup_button.clicked.connect(self.backup_database)
+        self.import_button.clicked.connect(self.import_json_data)
 
 
     # Reloads the displayed data.
@@ -54,3 +59,33 @@ class SettingsPage(BasePage):
             return
         backup_database(file_path)
         self.show_info("The data was backed up successfully.")
+
+
+    # Replaces the current database with a validated JSON file.
+    def import_json_data(self):
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, "Load JSON Data", "", "JSON Files (*.json)"
+        )
+        if not file_path:
+            return
+
+        answer = QMessageBox.question(
+            self, "Replace Current Data",
+            "Loading this file will replace the current items, inquiries, and claims. Continue?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if answer != QMessageBox.StandardButton.Yes:
+            return
+
+        try:
+            counts = import_database(file_path)
+        except (OSError, ValueError, TypeError) as error:
+            self.show_error(f"Could not load that JSON file.\n{error}")
+            return
+
+        self.data_imported.emit()
+        self.show_info(
+            "JSON data loaded successfully.\n"
+            f"Items: {counts['items']}  |  Inquiries: {counts['inquiries']}  |  Claims: {counts['claims']}"
+        )
