@@ -53,6 +53,9 @@ QDialog QLineEdit:disabled, QDialog QTextEdit:disabled, QDialog QComboBox:disabl
     border-radius: 0;
 }
 
+
+
+
 /* Form heading hierarchy */
 QDialog QLabel#formTitle {
     color: #202020;
@@ -64,4 +67,82 @@ QDialog QLabel#formSubtitle {
     color: #666666;
     font-size: 13px;
     font-weight: normal;
+}
+
+/* Primary Save and secondary Cancel/Close actions */
+QDialog QPushButton#primaryFormButton {
+    background-color: #f2c200;
+    color: #1e1e1e;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-weight: bold;
+}
+QDialog QPushButton#primaryFormButton:hover {
+    background-color: #ffd633;
+}
+
+QDialog QPushButton#primaryFormButton:pressed {
+    background-color: #d9ad00;
+}
+QDialog QPushButton#secondaryFormButton {
+    background-color: #d93025;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-weight: bold;
+}
+QDialog QPushButton#secondaryFormButton:hover {
+    background-color: #b9251c;
+}
+
+QDialog QPushButton#secondaryFormButton:pressed {
+    background-color: #8c1f18;
+}
+
+/* Force the calendar popup to use a readable light theme. */
+QCalendarWidget {
+    background-color: #ffffff;
+    color: #222222;
+}
+QCalendarWidget QWidget {
+    background-color: #ffffff;
+    color: #222222;
+    alternate-background-color: #f3f4f6;
+}
+QCalendarWidget QToolButton {
+    background-color: #f5f5f5;
+    color: #222222;
+    border: 1px solid #d5d5d5;
+    border-radius: 4px;
+    padding: 5px;
+    font-weight: bold;
+}
+QCalendarWidget QToolButton:hover {
+    background-color: #eeeeee;
+}
+QCalendarWidget QToolButton::menu-indicator {
+    image: none;
+}
+QCalendarWidget QSpinBox {
+    background-color: #ffffff;
+    color: #222222;
+    border: 1px solid #d5d5d5;
+    padding: 3px;
+}
+QCalendarWidget QAbstractItemView {
+    background-color: #ffffff;
+    color: #222222;
+    selection-background-color: #f2c200;
+    selection-color: #1e1e1e;
+    alternate-background-color: #f3f4f6;
+    border: 1px solid #d5d5d5;
+    outline: 0;
+}
+QCalendarWidget QAbstractItemView:enabled {
+    color: #222222;
+}
+QCalendarWidget QAbstractItemView:disabled {
+    color: #a0a0a0;
 }

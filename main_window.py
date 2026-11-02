@@ -1,7 +1,10 @@
+import os
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import (QButtonGroup, QFrame, QHBoxLayout, QLabel, QMainWindow,
                              QPushButton, QStackedWidget, QVBoxLayout, QWidget)
 
+from data.store import BASE_DIR
 from pages.claims_page import ClaimsPage
 from pages.inquiries_page import InquiriesPage
 from pages.home_page import HomePage
@@ -31,11 +34,16 @@ class MainWindow(QMainWindow):
         sidebar_layout.setContentsMargins(0, 0, 0, 0)
         sidebar_layout.setSpacing(2)
 
-        title = QLabel("T.I.P. Lost & Found")
-        title.setObjectName("logoLabel")
-        title.setFixedHeight(90)
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        sidebar_layout.addWidget(title)
+        logo = QLabel()
+        logo.setObjectName("logoLabel")
+        logo.setFixedHeight(120)
+        logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        logo.setStyleSheet("padding: 14px;")
+        logo_path = os.path.join(BASE_DIR, "images", "icons", "logo.png")
+        logo_pixmap = QPixmap(logo_path)
+        if not logo_pixmap.isNull():
+            logo.setPixmap(logo_pixmap.scaled(192, 92, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+        sidebar_layout.addWidget(logo)
 
         self.pages = QStackedWidget()
 

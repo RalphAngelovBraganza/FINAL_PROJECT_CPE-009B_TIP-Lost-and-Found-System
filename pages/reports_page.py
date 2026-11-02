@@ -37,7 +37,9 @@ class ReportsPage(BasePage):
         for group_title, rows in SUMMARY_GROUPS.items():
             group_box = QGroupBox()
             form = QFormLayout(group_box)
-            form.addRow(QLabel(group_title))
+            group_title_label = QLabel(group_title)
+            group_title_label.setObjectName("reportGroupTitle")
+            form.addRow(group_title_label)
             for label_text, key in rows:
                 value_label = QLabel("0")
                 self.value_labels[key] = value_label
@@ -45,7 +47,9 @@ class ReportsPage(BasePage):
             summary_row.addWidget(group_box)
         self.main_layout.addLayout(summary_row)
 
-        self.main_layout.addWidget(QLabel("Found Items by Category"))
+        category_title = QLabel("Found Items by Category")
+        category_title.setObjectName("categorySectionTitle")
+        self.main_layout.addWidget(category_title)
         self.category_table = self.create_table(["Category", "Total", "Unclaimed", "Claimed"])
         self.main_layout.addWidget(self.category_table)
 

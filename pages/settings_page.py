@@ -15,8 +15,11 @@ class SettingsPage(BasePage):
     def __init__(self):
         super().__init__("Settings")
 
-        database_box = QGroupBox("Database")
+        database_box = QGroupBox()
         database_layout = QVBoxLayout(database_box)
+        database_title = QLabel("Database")
+        database_title.setObjectName("databaseSectionTitle")
+        database_layout.addWidget(database_title)
 
         location_label = QLabel(f"Data file: {DATA_PATH}")
         location_label.setWordWrap(True)
