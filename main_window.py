@@ -1,10 +1,10 @@
 import os
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import (QButtonGroup, QFrame, QHBoxLayout, QLabel, QMainWindow,
                              QPushButton, QStackedWidget, QVBoxLayout, QWidget)
 
-from data.store import BASE_DIR
+from data.store import BASE_DIR, window_icon_path
 from pages.claims_page import ClaimsPage
 from pages.inquiries_page import InquiriesPage
 from pages.home_page import HomePage
@@ -19,6 +19,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("T.I.P. Lost and Found Office Management and Tracking System")
+        self.setWindowIcon(QIcon(window_icon_path("main.png")))
         self.resize(1150, 700)
 
         central = QWidget()

@@ -1,10 +1,13 @@
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QPoint, pyqtSignal
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QWidget, QLabel, QLineEdit, QPushButton, QCheckBox,
     QVBoxLayout, QHBoxLayout, QFrame, QGraphicsDropShadowEffect
 )
+
+from data.store import window_icon_path
 
 
 # Handles staff sign-in.
@@ -16,6 +19,7 @@ class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("T.I.P. Lost & Found Office Management & Tracking System")
+        self.setWindowIcon(QIcon(window_icon_path("login.png")))
         self.resize(440, 430)
         self.setMinimumSize(400, 400)
 

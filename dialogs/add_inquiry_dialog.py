@@ -1,9 +1,10 @@
 from PyQt6.QtCore import QDate, Qt
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (QComboBox, QDateEdit, QDialog, QDialogButtonBox, QFileDialog,
                              QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox,
                              QPushButton, QTextEdit, QVBoxLayout, QWidget)
 
-from data.store import CATEGORIES, copy_image_to_images
+from data.store import CATEGORIES, copy_image_to_images, window_icon_path
 
 
 # Collects and validates lost item inquiry details.
@@ -13,6 +14,7 @@ class AddInquiryDialog(QDialog):
     def __init__(self, parent=None, inquiry=None):
         super().__init__(parent)
         self.setWindowTitle("Edit Lost-Item Inquiry" if inquiry else "Add Lost-Item Inquiry")
+        self.setWindowIcon(QIcon(window_icon_path("inquiry_form.png")))
         self.setMinimumSize(900, 640)
         self.resize(1000, 700)
 

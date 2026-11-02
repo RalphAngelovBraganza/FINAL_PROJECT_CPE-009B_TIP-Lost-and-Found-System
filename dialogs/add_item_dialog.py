@@ -1,9 +1,10 @@
 from PyQt6.QtCore import QDate, Qt
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (QComboBox, QDateEdit, QDialog, QDialogButtonBox, QFileDialog,
                              QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox,
                              QPushButton, QTextEdit, QVBoxLayout, QWidget)
 
-from data.store import CATEGORIES, copy_image_to_images
+from data.store import CATEGORIES, copy_image_to_images, window_icon_path
 
 
 # Collects and validates found item details.
@@ -13,6 +14,7 @@ class AddItemDialog(QDialog):
     def __init__(self, parent=None, item=None):
         super().__init__(parent)
         self.setWindowTitle("Edit Item" if item else "Add Found Item")
+        self.setWindowIcon(QIcon(window_icon_path("item_form.png")))
         self.setMinimumSize(900, 620)
         self.resize(1000, 680)
 

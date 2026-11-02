@@ -13,6 +13,12 @@ DATA_PATH = os.path.join(BASE_DIR, "lost_and_found.json")
 
 # Stores the image folder path.
 IMAGES_DIR = os.path.join(BASE_DIR, "images")
+ICONS_DIR = os.path.join(IMAGES_DIR, "icons")
+
+
+# Returns the path to a window icon stored in the shared icon folder.
+def window_icon_path(filename):
+    return os.path.join(ICONS_DIR, filename)
 
 
 # Lists the available record categories.

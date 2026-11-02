@@ -1,7 +1,7 @@
 from PyQt6.QtCore import QDate, Qt
-from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtGui import QColor, QIcon, QPalette
 
-from data.store import format_record_id
+from data.store import format_record_id, window_icon_path
 from PyQt6.QtWidgets import (QComboBox, QCompleter, QDateEdit, QDialog, QDialogButtonBox,
                              QGridLayout, QHBoxLayout, QLabel, QLineEdit,
                              QMessageBox, QTextEdit, QVBoxLayout, QWidget)
@@ -14,6 +14,7 @@ class ClaimDialog(QDialog):
     def __init__(self, parent, unclaimed_items):
         super().__init__(parent)
         self.setWindowTitle("Record Claim")
+        self.setWindowIcon(QIcon(window_icon_path("claim.png")))
         self.setMinimumSize(800, 480)
         self.resize(900, 540)
 

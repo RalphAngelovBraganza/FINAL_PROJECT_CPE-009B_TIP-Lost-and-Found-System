@@ -1,11 +1,11 @@
 import os
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont, QPixmap
+from PyQt6.QtGui import QFont, QIcon, QPixmap
 from PyQt6.QtWidgets import (QDialog, QDialogButtonBox, QFrame, QHBoxLayout,
                              QLabel, QScrollArea, QSizePolicy, QTextEdit, QVBoxLayout, QWidget, QLineEdit)
 
-from data.store import BASE_DIR, format_record_id
+from data.store import BASE_DIR, format_record_id, window_icon_path
 
 
 # Displays saved inquiry details and its photo.
@@ -15,6 +15,7 @@ class InquiryDetailsDialog(QDialog):
     def __init__(self, inquiry, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Inquiry Details")
+        self.setWindowIcon(QIcon(window_icon_path("inquiry_details.png")))
         self.setMinimumSize(1100, 700)
         self.resize(1200, 800)
 
